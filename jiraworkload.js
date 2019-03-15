@@ -2,20 +2,6 @@ function GetAlert(){
   alert('Тест');
 }
 
-// ==UserScript==
-// @name         Jira WorkLoad
-// @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  try to take over the world!
-// @author       You
-// @match        https://jira.action-media.ru/*
-// @require      https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js
-// @require      https://stanislavmikhalskiy.github.io/jiraworkload.js
-// @grant GM_registerMenuCommand
-// ==/UserScript==
-
-GM_registerMenuCommand("Рассчитать", function () { FirstStart(); });
-
 // Настрокий Jira
 var jiraURL = "https://jira.action-media.ru";
 var jCreateTaskURL="/rest/api/2/issue/";
