@@ -1,5 +1,5 @@
-function GetAlert(){
-  alert('Тест');
+function GetAlert(value){
+  alert(value);
 }
 
 // Настрокий Jira
