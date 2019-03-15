@@ -1,5 +1,5 @@
 function GetAlert(value){
-  alert(value);
+  alert(value+' Go!');
 }
 
 // Настрокий Jira
