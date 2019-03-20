@@ -36,7 +36,7 @@ function GetTimeToWorkSmart(flevel){
     // если мы уже запрашивали спринт в этой сессии и у нас есть его значение, то повторно запрашивать не будем
     if (planTime.length<1) {
         console.log(f+'Данные по доступному времени еще не запрашивались');
-        functionResponseArray = GetTimeToWork(futureSprint);
+        functionResponseArray = GetTimeToWork(futureSprint,f);
         if (functionResponseArray.state) {
             planTime = functionResponseArray.value;
             console.log(f+'Данные по доступному времени получены успешно');
