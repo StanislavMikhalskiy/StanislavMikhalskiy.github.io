@@ -30,6 +30,7 @@ function JiraGetFutureSprint(value,flevel){
     .fail(function(errmsg) { console.log(f+'Ошибка обработки '+errmsg.responseText); })
     //.always(function() { result="finished"; });
     ;
-
+    console.log(f+'JiraGetFutureSprint - завершение работы функции');
+    
     return localFunctionResponse;
 }
