@@ -21,5 +21,7 @@ function GetFutureSprintSmart(flevel){
         console.log(f+'Спринт уже был определен: '+futureSprint);
         return true;
     }
+    
+    console.log(f+'GetFutureSprintSmart - завершение работы функции');
     return false;
 }
