@@ -9,6 +9,8 @@ var jFieldNameEpicName="customfield_10102";
 var jFieldNameEpicLink="customfield_10100";
 var jFindURL="/rest/api/2/search";
 var jGetSprint="/rest/agile/1.0/board/";
+var roleField = "customfield_11304", roleTimeField = "customfield_11303";
 
 var functionResponse = {value:"",state:false,errorMsg:""};
 var functionResponseArray = {value:[],state:false,errorMsg:""};
+var errorMessage = "";
