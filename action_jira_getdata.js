@@ -45,8 +45,7 @@ function GetTimeToWork(value,flevel){
     url: URL,
     type: "GET",
     success: function(jqdata) {
-        console.log(f+'Запрос успешно отработал');
-        console.log('jqdata.length = '+jqdata.length);
+        console.log(f+'Запрос успешно отработал, jqdata.length = '+jqdata.length);
         if (jqdata.length > 0) {
             localFunctionResponseArray.state = true;
             localFunctionResponseArray.value = jqdata;
