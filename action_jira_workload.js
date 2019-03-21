@@ -58,3 +58,25 @@ function GetTimeToWorkSmart(flevel){
     console.log(f+'GetTimeToWorkSmart - завершение работы функции');
     return false;
 }
+
+function ParseJiraTasks(value, flevel){
+    var f = flevel+'- ';
+    console.log(f+'ParseJiraTasks - Запуск функции');
+    console.log(f+'value.total = '+value.total);
+
+    for(var i = 0; i < value.total; i++) {
+        var issue = ParseJiraTask(value.issues[i],f);
+        issues.push(issue);
+        console.log(f+'Добавлена задача '+issue.key);
+    }
+/*
+issues = []
+{key
+,assignee
+,roles:[{role, login, estimate}]
+,originalEstimate
+,message
+}
+*/
+    console.log(f+'ParseJiraTasks - завершение работы функции');
+}
