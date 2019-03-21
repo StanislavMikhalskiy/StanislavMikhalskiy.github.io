@@ -40,7 +40,7 @@ function GetTimeToWork(value,flevel){
     console.log(f+'GetTimeToWork - Запуск функции');
     var localFunctionResponseArray = {value:[],state:false,errorMsg:""},
         sprint = value,
-        URL = "https://script.google.com/macros/s/AKfycbwJ8QiZKAyFVpjFbF037JQ6UmDaaq_SGPlu1eANAK9eHpEMjV0/exec?sprint="+sprint;
+        URL = "https://script.google.com/macros/s/AKfycbwJ8QiZKAyFVpjFbF037JQ6UmDaaq_SGPlu1eANAK9eHpEMjV0/exec?sprint="+sprint+"&team="+googleTabName;
     var jqxhr = $.ajax({
     url: URL,
     type: "GET",
