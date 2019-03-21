@@ -67,3 +67,58 @@ function GetTimeToWork(value,flevel){
     console.log(f+'GetTimeToWork - завершение работы функции');
     return localFunctionResponseArray;
 }
+
+function GetSprintWorkload(value,flevel){
+    var f = flevel+'- ';
+    console.log(f+'GetSprintWorkload - Запуск функции');
+    var localFunctionResponseArray = {value:[],state:false,errorMsg:""};
+    var taskdata = {
+        "jql": "project = "+projectID+" and Sprint in ('"+value+"') and status not in (Closed)",
+        "startAt": 0,
+        "maxResults": 500,
+        "fields": [
+            "fixVersions",
+            "customfield_11303",
+            "customfield_11304",
+            "timeestimate",
+            "timeoriginalestimate",
+            "timetracking",
+            "assignee"
+        ]
+    };
+    var parameters = JSON.stringify(taskdata);
+    var req = $.ajax({
+        url: jiraURL+jFindURL,
+        type: "POST",
+        data: parameters,
+        contentType: 'application/json',
+        dataType: 'json',
+        async: false,
+        processData: false,
+        beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader('Content-Type', 'application/json')
+        },
+        error: function (errmsg) {
+            console.log(f+'Ошибка: ' + errmsg.responseText + " " + parameters);
+            localFunctionResponseArray.errorMsg = "GetSprintWorkload - Ошибка выполнения запроса";
+        },
+        success: function (data) {
+            console.log(f+'Запрос успешно отработал '+jiraURL+jFindURL+" "+taskdata);
+            if ("total" in data) {
+                if (data.total>0) {
+                    localFunctionResponseArray.state = true;
+                    localFunctionResponseArray.value = data;
+                } else {
+                    localFunctionResponseArray.errorMsg = "В спринт '"+value+"' еще не запланированы задачи";
+                    console.log(f+'В спринт "'+value+'" еще не запланированы задачи');
+                }
+            } else {
+                console.log(f+'Параметр "total" не найден в ответе');
+                localFunctionResponseArray.errorMsg = "GetSprintWorkload - Ошибка выполнения запроса. Параметр 'total' не найден в ответе";
+            }
+        }
+        });
+
+    console.log(f+'GetSprintWorkload - завершение работы функции');
+    return localFunctionResponseArray;
+}
