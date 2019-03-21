@@ -80,3 +80,119 @@ issues = []
 */
     console.log(f+'ParseJiraTasks - завершение работы функции');
 }
+
+function ParseJiraTask(value, flevel){
+    var f = flevel+'- ';
+    console.log(f+'ParseJiraTask - Запуск функции');
+    var result = {
+        key:"",
+        assignee:"",
+        originalEstimate: 0,
+        message: "",
+        roles: []
+    };
+
+    result.key = value.key;
+    if ('timeoriginalestimate' in value.fields && value.fields['timeoriginalestimate'] != null) {
+        result.originalEstimate = value.fields.timeoriginalestimate;
+        console.log(f+'У задачи '+result.key+' originalEstimate = '+result.originalEstimate);
+    } else {
+        result.message += "Отсутствует timeoriginalestimate. ";
+        console.log(f+'У задачи '+result.key+' отсутствует timeoriginalestimate');
+    }
+
+    if ('assignee' in value.fields && 'key' in value.fields.assignee && value.fields.assignee['key'] != null) {
+        result.assignee = value.fields.assignee.key;
+        console.log(f+'У задачи '+result.key+' assignee = '+result.assignee);
+    } else {
+        result.message += "Отсутствует assignee.key. ";
+        console.log(f+'У задачи '+result.key+' отсутствует assignee.key');
+    }
+    // проверяем, что есть данные по ролям (пользователь) var roleField = "customfield_11304"
+    /*
+    if (roleField in value.fields && value.fields[roleField] != null) {
+        console.log(f+'У задачи '+result.key+' есть данные по ролям (пользователь) '+roleField+' в количестве '+value.fields[roleField].length);
+        var hasRoleLogin = false;
+        // обходим массив ролей (пользователь)
+        for(var i = 0; i < value.fields[roleField].length; i++) {
+            // для каждого элемента ищем соответствие известным ролям var RoleCommon = [{RoleCode:'10206',RoleName:'Developers'},{RoleCode:'10404',RoleName:'QA'}];
+            for ( var j=0; j<RoleCommon.length; j++) {
+                var roleLogin = ParseRole(value.fields[roleField][i],RoleCommon[j].RoleCode,f);
+                if ( roleLogin.length > 0 ) {
+                    console.log(f+'У задачи '+result.key+' есть роль '+RoleCommon[j].RoleName+' с логином '+roleLogin);
+                    //console.log(f+'добавляем в массив роль '+RoleCommon[j].RoleName+', логин '+roleLogin+' и нулевое время');
+                    result.roles.push({role:RoleCommon[j].RoleName,login:roleLogin,estimate:0});
+                    hasRoleLogin = true;
+                } else { console.log(f+'У задачи '+result.key+' нет роли '+RoleCommon[j].RoleName);}
+            }
+        }
+        if (!hasRoleLogin) {
+            console.log(f+'У задачи '+result.key+' нет ролей');
+            result.message += "Отсутствуют данные по ролям (пользователь). ";
+        }
+    } else {
+        result.message += "Отсутствуют данные по ролям (пользователь). ";
+        console.log(f+'У задачи '+result.key+' отсутствуют данные по ролям (пользователь) '+roleField);
+    }*/
+    // проверяем, что есть данные по ролям (время) var roleTimeField = "customfield_11303";
+    /*
+    if (roleTimeField in value.fields && value.fields[roleTimeField] != null) {
+        console.log(f+'У задачи '+result.key+' есть данные по ролям (время) '+roleTimeField+' в количестве '+value.fields[roleTimeField].length);
+        // обходим массив ролей (время)
+        for(i = 0; i < value.fields[roleTimeField].length; i++) {
+            // для каждого элемента ищем соответствие известным ролям var RoleCommon = [{RoleCode:'10206',RoleName:'Developers'},{RoleCode:'10404',RoleName:'QA'}];
+            for (j=0; j<RoleCommon.length; j++) {
+                var roleTime = ParseJiraRoleTime(value.fields[roleTimeField][i],RoleCommon[j].RoleName,f);
+                if ( roleTime > 0 ) {
+                    console.log(f+'У задачи '+result.key+' есть роль '+RoleCommon[j].RoleName+' со временем '+roleTime);
+                    // ищем по массиву ролей, если такая роль есть - выставляем время, если нет - добавляем новую запись
+                    var roleFinded = false;
+                    for (var k=0; k<result.roles.length; k++) {
+                        if (result.roles[k].role === RoleCommon[j].RoleName) {
+                            result.roles[k].estimate = roleTime;
+                            roleFinded = true;
+                            console.log(f+'У задачи '+result.key+' нашли соответствие роли '+RoleCommon[j].RoleName+' со временем '+roleTime);
+                            break;
+                        }
+                    }
+                    if (!roleFinded) {
+                        result.roles.push({role:RoleCommon[j].RoleName,login:'',estimate:roleTime});
+                        console.log(f+'У задачи '+result.key+' не нашли соответствие и добавили для роли '+RoleCommon[j].RoleName+' со временем '+roleTime);
+                    }
+                } else { console.log(f+'У задачи '+result.key+' нет роли или времени '+RoleCommon[j].RoleName);}
+            }
+        }
+    } else {
+        result.message += "Отсутствуют данные по ролям (время). ";
+        console.log(f+'У задачи '+result.key+' отсутствуют данные по ролям (время) '+roleTimeField);
+    }*/
+
+/*
+issues = []
+{key
+,assignee
+,roles:[{role, login, estimate}]
+,originalEstimate
+,message
+}
+*/
+/*
+{
+
+    {
+      "fields": {
+        "customfield_11303": null,
+        "customfield_11304": [
+          "Role: 10206 (i.kishkevich)",
+          "Role: 10404 ()"
+        ],
+        "timeestimate": 7200,
+        "timeoriginalestimate": 7200,
+        "fixVersions": [],
+      }
+    }
+}
+*/
+    console.log(f+'ParseJiraTask - завершение работы функции');
+    return result;
+}
