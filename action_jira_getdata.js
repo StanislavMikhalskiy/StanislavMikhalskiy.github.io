@@ -35,12 +35,13 @@ function JiraGetFutureSprint(value,flevel){
     return localFunctionResponse;
 }
 
-function GetTimeToWork(value,flevel){
+function GetTimeToWork(value,v_googleTabName,flevel){
     var f = flevel+'- ';
     console.log(f+'GetTimeToWork - Запуск функции');
     var localFunctionResponseArray = {value:[],state:false,errorMsg:""},
         sprint = value,
-        URL = "https://script.google.com/macros/s/AKfycbwJ8QiZKAyFVpjFbF037JQ6UmDaaq_SGPlu1eANAK9eHpEMjV0/exec?sprint="+sprint+"&team="+googleTabName;
+        URL = "https://script.google.com/macros/s/AKfycbwJ8QiZKAyFVpjFbF037JQ6UmDaaq_SGPlu1eANAK9eHpEMjV0/exec?sprint="+sprint+"&team="+v_googleTabName;
+    console.log(f+'URL = '+URL);
     var jqxhr = $.ajax({
     url: URL,
     type: "GET",
