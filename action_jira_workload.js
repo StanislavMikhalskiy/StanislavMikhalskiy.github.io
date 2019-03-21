@@ -196,3 +196,21 @@ issues = []
     console.log(f+'ParseJiraTask - завершение работы функции');
     return result;
 }
+
+function UpdateWorkload(valueIssues,valueEmployees,flevel){
+    var f = flevel+'- ';
+    console.log(f+'UpdateWorkload - Запуск функции');
+    console.log(f+'valueIssues.length = '+valueIssues.length);
+
+    for(var i = 0; i < valueEmployees.length; i++) { //employees.push({"eName":planTime[i].login,"planTimeToWork":planTime[i].timeToWork,"eEstimate":0,"eOstatok":0,"planRole":planTime[i].role});
+        valueEmployees[i].eEstimate = 0;
+        for(var j = 0; j < valueIssues.length; j++) {
+            if (valueIssues[j].assignee === valueEmployees[i].eName) {
+                valueEmployees[i].eEstimate += valueIssues[j].originalEstimate/60/60;
+            }
+        }
+        valueEmployees[i].eOstatok = valueEmployees[i].planTimeToWork - valueEmployees[i].eEstimate;
+        console.log(f+'employees.eName = '+valueEmployees[i].eName+' employees.planTimeToWork = '+valueEmployees[i].planTimeToWork+' employees.eEstimate = '+valueEmployees[i].eEstimate+' employees.eOstatok = '+valueEmployees[i].eOstatok);
+    }
+    console.log(f+'UpdateWorkload - завершение работы функции');
+}
