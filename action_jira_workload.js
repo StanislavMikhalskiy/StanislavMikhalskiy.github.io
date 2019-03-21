@@ -214,3 +214,146 @@ function UpdateWorkload(valueIssues,valueEmployees,flevel){
     }
     console.log(f+'UpdateWorkload - завершение работы функции');
 }
+
+function Recalculate(){
+    console.log('Refresh - Запуск функции');
+    errorMessage = "";
+    FirstStart();
+}
+
+function GenerateTable(value,flevel){
+    var f = flevel+'- ';
+    console.log(f+'GenerateTable - Запуск функции');
+    var localhtmlTable = "";
+
+    localhtmlTable+="<table width='50%'>";
+    localhtmlTable+="<tr><td class='caption'>Сотрудник</td><td class='caption'>Роль</td><td class='caption'>Начальное время</td><td class='caption'>Запланировано</td><td class='caption'>Остаток</td></tr>";
+    var rowClass="";
+
+    for(var i = 0; i < value.length; i++){
+        // анализируем загрузку
+        if ( (value[i].eEstimate) > value[i].planTimeToWork ) { if ( i & 1 ) { rowClass="hardFullOne"; } else { rowClass="hardFullTwo"; } }
+        if ( (value[i].eEstimate) == value[i].planTimeToWork ) { if ( i & 1 ) { rowClass="normalFullOne"; } else { rowClass="normalFullTwo"; } }
+        if ( (value[i].eEstimate) < value[i].planTimeToWork ) { if ( i & 1 ) { rowClass="normalFreeOne"; } else { rowClass="normalFreeTwo"; } }
+
+        localhtmlTable+="<tr><td class='"+rowClass+"'>"+value[i].eName
+            +"</td><td class='"+rowClass+"'>"+value[i].planRole
+            +"</td><td class='"+rowClass+"'>"+value[i].planTimeToWork
+            +"</td><td class='"+rowClass+"'>"+(value[i].eEstimate).toFixed(1)
+            +"</td><td class='"+rowClass+"'>"+(value[i].eOstatok).toFixed(1)
+            +"</td></tr>";
+    }
+    localhtmlTable+="</table>";
+
+    console.log(f+'GenerateTable - завершение работы функции');
+    return localhtmlTable;
+}
+
+function GenerateWindow(value, flevel){
+    var f = flevel+'- ';
+    console.log(f+'GenerateWindow - Запуск функции');
+
+
+    GenerateWindowInside(errorMessage+value+globalStyle,f);
+    /*var screenSizeW = 900,
+        screenSizeH = 600,
+        screenL = Number((screen.width/2)-(screenSizeW/2)),
+        screenT = Number((screen.height/2)-(screenSizeH/2));
+    var x=window.open('','','width='+screenSizeW+', height='+screenSizeH+'');
+    x.document.open();
+    x.document.write(doc+errorMessage+value+buttonOut+btnReset+style);
+    x.document.close();*/
+    console.log(f+'GenerateWindow - завершение работы функции');
+}
+
+function GenerateWindowInside(value,flevel){
+    var f = flevel+'- ';
+    console.log(f+'GenerateWindowInside - Запуск функции');
+
+    // ghx-plan-group ghx-operations
+    var targetElem = document.getElementById('ghx-plan-group'); // ghx-plan ghx-header ghx-plan-group header
+    var buttonOut, sourceElem, workloadDiv, menuElem, menuNav;
+
+    if (typeof(targetElem) != 'undefined' && targetElem != null) {
+        console.log(f+'targetElem существует');
+
+        // <input type="checkbox" id="id-nav-toggle" hidden>
+        menuElem = document.getElementById('nav-toggle');
+        if (typeof(menuElem) != 'undefined' && menuElem != null) {
+            console.log(f+'menuElem существует');
+            sourceElem = document.getElementById('id-workload');
+            sourceElem.innerHTML = value;
+        } else {
+            console.log(f+'menuElem создаем');
+            menuElem = document.createElement('input');
+            menuElem.id = "nav-toggle";
+            menuElem.setAttribute('type', 'checkbox');
+            menuElem.setAttribute('hidden', 'hidden');
+            document.body.insertBefore(menuElem, document.body.firstChild);
+
+            menuNav = document.createElement('nav');
+            menuNav.id = "id-menuNav";
+            menuNav.setAttribute('class', 'nav');
+            menuNav.innerHTML = '<label for="nav-toggle" class="nav-toggle" onclick></label>';
+
+            buttonOut = document.createElement('a');
+            buttonOut.id = "id-btnworkload";
+            buttonOut.href='javascript: void 0;';
+            buttonOut.innerText='Обновить';
+            //buttonOut.class='button24';
+            buttonOut.setAttribute('class', 'button24');
+            buttonOut.onclick=Recalculate;
+
+            sourceElem = document.createElement('div');
+            sourceElem.id = "id-workload";
+            sourceElem.setAttribute('class', 'box');
+            sourceElem.innerHTML = value;
+
+            menuNav.appendChild(buttonOut);
+            menuNav.appendChild(sourceElem);
+
+            //targetElem.insertBefore(menuNav, targetElem.firstChild);
+            document.body.appendChild(menuNav);
+        }
+    }
+    console.log(f+'GenerateWindowInside - завершение работы функции');
+}
+
+function FirstStart(){
+    var f = '- ';
+    console.log(f+'FirstStart - Запуск функции');
+    var htmlTable = "",
+        supportMessage="";
+    errorMessage = "";
+    // если спринта у нас нет, то ничего больше не делаем
+    if (GetFutureSprintSmart(f)){
+        if (GetTimeToWorkSmart(f)){
+            // если мы еще не наполняли массив employees
+            if (employees.length < 1) {
+                console.log(f+'Массив данных по сотрудникам employees еще не заполнялся');
+                // обрабатываем данные по ресурсам
+                for(var i = 0; i < planTime.length; i++){
+                    // добавляем сотрудника в массив
+                    employees.push({"eName":planTime[i].login,"planTimeToWork":planTime[i].timeToWork,"eEstimate":0,"eOstatok":0,"planRole":planTime[i].role});
+                    console.log(f+'Добавляем сотрудника в массив '+employees[i].eName+" "+employees[i].planTimeToWork+" "+employees[i].planRole);
+                }
+            }
+            // получаем данные по текущей загрузке в спринте
+            var sprintWorkload = [];
+            issues = []; console.log(f+'Сбрасываем информацию об обработанных ранее задачах');
+            functionResponseArray = GetSprintWorkload(futureSprint,f);
+            if (functionResponseArray.state) {
+                sprintWorkload = functionResponseArray.value;
+
+                ParseJiraTasks(sprintWorkload, f);
+                UpdateWorkload(issues,employees,f);
+            } else {
+                errorMessage += "<p>"+functionResponseArray.errorMsg+"</p>";
+            }
+            htmlTable = GenerateTable(employees,f);
+        }
+    }
+    GenerateWindow(htmlTable, f);
+
+    console.log(f+'FirstStart - завершение работы функции');
+}
